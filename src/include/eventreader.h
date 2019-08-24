@@ -18,4 +18,4 @@ struct TouchEvent
     enum FingerStatus status;
 };
 
-void process_touch(void (*process)(struct TouchEvent *));
+void process_touch(void (**process)(struct TouchEvent *), int num_recognizers);

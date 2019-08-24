@@ -14,7 +14,10 @@ int main()
     injector_init();
     ui_init();
 
-    process_touch(&recognize_gestures);
+    void (*recognizers[])(struct TouchEvent *) = {
+        &recognize_gestures};
+
+    process_touch(recognizers, 1);
 
     return 0;
 }

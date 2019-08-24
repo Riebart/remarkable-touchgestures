@@ -3,6 +3,7 @@
 bin/
 obj/
 
+src/include/version.h
 Makefile
 .qmake.stash
 tags

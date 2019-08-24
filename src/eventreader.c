@@ -18,9 +18,11 @@ struct Finger
     enum FingerStatus status;
     int track_id;
 };
-static struct Finger fingers[MAX_SLOTS + 1];
-void process_touch(void (*process)(struct TouchEvent *))
+
+void process_touch(void (**recognizers)(struct TouchEvent *), int num_recognizers)
 {
+    static struct Finger fingers[MAX_SLOTS + 1];
+
     struct input_event evt;
 
     int slot = 0;
@@ -120,7 +122,11 @@ void process_touch(void (*process)(struct TouchEvent *))
                     event.raw_position.y = f->raw_y;
                     event.status = f->status;
 
-                    process(&event);
+                    for (int r_i = 0; r_i < num_recognizers; r_i++)
+                    {
+                        printf("%d %p\n", r_i, recognizers[r_i]);
+                        recognizers[r_i](&event);
+                    }
 
                     if (f->status == Down)
                     {
