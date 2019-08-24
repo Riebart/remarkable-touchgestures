@@ -6,10 +6,10 @@
 #include <linux/input.h>
 #include <time.h>
 
-#include "include/ui.h"
-#include "include/keyinjector.h"
-#include "include/gestures.h"
-#include "include/gesture_definition.h"
+#include "include/ui.hpp"
+#include "include/keyinjector.hpp"
+#include "include/gestures.hpp"
+#include "include/gesture_definition.hpp"
 
 enum Key
 {

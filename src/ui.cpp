@@ -3,7 +3,7 @@
 #include <QImage>
 #include <epframebuffer.h>
 
-#include "include/ui.h"
+#include "include/ui.hpp"
 
 //segfault if it does not exist
 QGuiApplication *app;

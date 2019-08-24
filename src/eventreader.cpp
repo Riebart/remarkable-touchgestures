@@ -6,8 +6,9 @@
 #include <stdbool.h>
 #include <linux/input.h>
 
-#include "include/eventreader.h"
-#include "include/ui.h"
+#include "include/gestures.hpp"
+#include "include/eventreader.hpp"
+#include "include/ui.hpp"
 
 struct Finger
 {
@@ -19,9 +20,9 @@ struct Finger
     int track_id;
 };
 
-void process_touch(void (**recognizers)(struct TouchEvent *), int num_recognizers)
+void process_touch(class GestureRecognizer **recognizers, int num_recognizers)
 {
-    static struct Finger fingers[MAX_SLOTS + 1];
+    struct Finger fingers[MAX_SLOTS + 1];
 
     struct input_event evt;
 
@@ -40,8 +41,6 @@ void process_touch(void (**recognizers)(struct TouchEvent *), int num_recognizer
         fprintf(stderr, "cannot open touchscreen");
         exit(1);
     }
-
-    //todo: async
 
     while (read(touchscreen, &evt, sizeof(evt)))
     {
@@ -124,8 +123,7 @@ void process_touch(void (**recognizers)(struct TouchEvent *), int num_recognizer
 
                     for (int r_i = 0; r_i < num_recognizers; r_i++)
                     {
-                        printf("%d %p\n", r_i, recognizers[r_i]);
-                        recognizers[r_i](&event);
+                        recognizers[r_i]->recognize_gestures(&event);
                     }
 
                     if (f->status == Down)

@@ -1,20 +1,24 @@
 #pragma once
-#include "point.h"
+#include "point.hpp"
 
 enum GestureType
 {
     Tap,
     TapLeft,
     TapRight,
+    TapUp,
+    TapDown,
     TapHold,
-    TwoTap,
-    TwoTapWide,
     SwipeLeft,
+    SwipeLeftLong,
     SwipeRight,
+    SwipeRightLong,
     SwipeUp,
     SwipeUpLong,
     SwipeDown,
-    SwipeDownLong
+    SwipeDownLong,
+    TwoTap,
+    TwoTapWide
 };
 
 struct Tap

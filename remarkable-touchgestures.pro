@@ -14,6 +14,5 @@ QMAKE_CXXFLAGS_RELEASE = -fvisibility=hidden
 
 # Input
 SOURCES += ./src/*.cpp
-SOURCES += ./src/*.c
 # FB stuff
 LIBS += -lqsgepaper

@@ -1,5 +1,7 @@
 #pragma once
-#include "point.h"
+#include "point.hpp"
+#include "gestures.hpp"
+
 enum FingerStatus
 {
     Untracked = 0,
@@ -18,4 +20,4 @@ struct TouchEvent
     enum FingerStatus status;
 };
 
-void process_touch(void (**process)(struct TouchEvent *), int num_recognizers);
+void process_touch(class GestureRecognizer **recognizers, int num_recognizers);
