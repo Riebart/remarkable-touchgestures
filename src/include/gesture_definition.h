@@ -1,8 +1,9 @@
 #pragma once
 #include "point.h"
 
-enum GestureType {
-    Tap, 
+enum GestureType
+{
+    Tap,
     TapLeft,
     TapRight,
     TapHold,
@@ -16,15 +17,18 @@ enum GestureType {
     SwipeDownLong
 };
 
-struct Tap {
+struct Tap
+{
     struct Point p;
     int hold_time;
 };
-struct TwoTap {
+struct TwoTap
+{
     struct Point start;
     struct Point end;
 };
-struct Swipe {
+struct Swipe
+{
     struct Point start;
     struct Point end;
     int velocity;
@@ -34,7 +38,8 @@ union GestureData {
     struct Swipe swipe;
 };
 
-struct Gesture {
+struct Gesture
+{
     enum GestureType type;
     union GestureData data;
 };

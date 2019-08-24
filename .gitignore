@@ -1,6 +1,8 @@
+.vscode
+
 bin/
-*.o
+obj/
+
 Makefile
 .qmake.stash
 tags
-obj/

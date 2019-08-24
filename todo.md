@@ -1,3 +1,0 @@
-- [ ] swipe gestures
-- [ ] UI feedback
-- [ ] config file

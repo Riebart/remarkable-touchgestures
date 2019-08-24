@@ -1,1 +1,1 @@
-echo "#define VERSION \"$(git describe --tags --long)\"" > version.h
+echo "#define VERSION \"$(git describe --tags --long)\"" > src/include/version.h

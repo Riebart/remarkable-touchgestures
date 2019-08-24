@@ -5,90 +5,111 @@
 #include <fcntl.h>
 #include <stdbool.h>
 #include <linux/input.h>
-#include "eventreader.h"
-#include "ui.h"
 
-struct Finger {
+#include "include/eventreader.h"
+#include "include/ui.h"
+
+struct Finger
+{
     int x;
     int y;
-	int raw_x;
-	int raw_y;
+    int raw_x;
+    int raw_y;
     enum FingerStatus status;
     int track_id;
 };
-static struct Finger fingers[MAX_SLOTS+1];
-void process_touch(void(*process)(struct TouchEvent *)){
+static struct Finger fingers[MAX_SLOTS + 1];
+void process_touch(void (*process)(struct TouchEvent *))
+{
     struct input_event evt;
 
     int slot = 0;
-    int x,y = 0;
+    int x, y = 0;
     int scr_width = SCREEN_WIDTH;
     int scr_height = SCREEN_HEIGHT;
     int width = TOUCH_WIDTH;
     int height = TOUCH_HEIGHT;
 
-    memset(fingers,0,sizeof(fingers));
+    memset(fingers, 0, sizeof(fingers));
 
     int touchscreen = open(TOUCHSCREEN, O_RDONLY);
-    if (!touchscreen){
+    if (!touchscreen)
+    {
         fprintf(stderr, "cannot open touchscreen");
         exit(1);
     }
 
     //todo: async
 
-    while(read(touchscreen,&evt, sizeof(evt))){
-        if (evt.type == EV_ABS) {
-            if (evt.code == ABS_MT_SLOT) {
+    while (read(touchscreen, &evt, sizeof(evt)))
+    {
+        if (evt.type == EV_ABS)
+        {
+            if (evt.code == ABS_MT_SLOT)
+            {
                 slot = evt.value;
-                if (slot >= MAX_SLOTS){
+                if (slot >= MAX_SLOTS)
+                {
                     slot = MAX_SLOTS; //sink
                 }
-                if (fingers[slot].status){
+                if (fingers[slot].status)
+                {
                     fingers[slot].status = Move;
-                } 
-                else {
+                }
+                else
+                {
                     fingers[slot].status = Down;
                 }
             }
-            else if (evt.code == ABS_MT_POSITION_X) {
+            else if (evt.code == ABS_MT_POSITION_X)
+            {
                 float pos = width - 1 - evt.value;
-                x = pos  / width  * scr_width;
+                x = pos / width * scr_width;
                 fingers[slot].x = x;
                 fingers[slot].raw_x = evt.value;
             }
-            else if (evt.code == ABS_MT_POSITION_Y) {
+            else if (evt.code == ABS_MT_POSITION_Y)
+            {
 
                 float pos = height - 1 - evt.value;
-                y = pos  / height * scr_height;
+                y = pos / height * scr_height;
                 fingers[slot].y = y;
                 fingers[slot].raw_y = evt.value;
-            } 
-            else if (evt.code == ABS_MT_TRACKING_ID && evt.value == -1) {
+            }
+            else if (evt.code == ABS_MT_TRACKING_ID && evt.value == -1)
+            {
                 /* printf("slot %d tracking %d\n",slot, evt.value); */
-                if (fingers[slot].status) {
+                if (fingers[slot].status)
+                {
                     fingers[slot].status = Up;
                 }
-            } 
-            else if (evt.code == ABS_MT_TRACKING_ID) {
-                if (slot == 0) {
+            }
+            else if (evt.code == ABS_MT_TRACKING_ID)
+            {
+                if (slot == 0)
+                {
                     /* printf("TRACK\n"); */
                     fingers[slot].status = Down;
                 }
-                if (fingers[slot].status) {
+                if (fingers[slot].status)
+                {
                     fingers[slot].track_id = evt.value;
                 }
             }
-            else {
+            else
+            {
                 /* printf("Uknown %d %d\n", evt.code, evt.value); */
             }
         }
-        else if (evt.type == EV_SYN && evt.code == SYN_REPORT) {
+        else if (evt.type == EV_SYN && evt.code == SYN_REPORT)
+        {
             /* printf("SYN slot %d\n", slot); */
             struct Finger *f;
-            for (int i=0;i< MAX_SLOTS;i++){
+            for (int i = 0; i < MAX_SLOTS; i++)
+            {
                 f = &fingers[i];
-                if (f->status) {
+                if (f->status)
+                {
 
                     struct TouchEvent event;
                     event.time = evt.time.tv_sec;
@@ -101,18 +122,19 @@ void process_touch(void(*process)(struct TouchEvent *)){
 
                     process(&event);
 
-                    if (f->status == Down) {
+                    if (f->status == Down)
+                    {
                         f->status = Move;
-                    } 
-
-                    if (f->status == Up){
-                        f->status = Untracked;;
                     }
 
+                    if (f->status == Up)
+                    {
+                        f->status = Untracked;
+                        ;
+                    }
                 }
             }
-
         }
     }
-	close(touchscreen);
+    close(touchscreen);
 }
