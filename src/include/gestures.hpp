@@ -6,23 +6,22 @@
 #include "eventreader.hpp"
 #include "ui.hpp"
 
-#define RECOGNIZER_CLASS(name, class_gesture_type)        \
-    class name : GestureRecognizer                        \
-    {                                                     \
-    public:                                               \
-        name() : GestureRecognizer()                      \
-        {                                                 \
-            gesture_string = #name;                       \
-            type = class_gesture_type;                    \
-        }                                                 \
-                                                          \
-        void recognize_gestures(struct TouchEvent *event) \
-        {                                                 \
-            GestureRecognizer::recognize_gestures(event); \
-        }                                                 \
-                                                          \
-    protected:                                            \
-        bool cond(int, int, int, int);                    \
+#define RECOGNIZER_CLASS(name)                                 \
+    class name : GestureRecognizer                             \
+    {                                                          \
+    public:                                                    \
+        name(GestureAction action) : GestureRecognizer(action) \
+        {                                                      \
+            gesture_string = #name;                            \
+        }                                                      \
+                                                               \
+        void recognize_gestures(struct TouchEvent *event)      \
+        {                                                      \
+            GestureRecognizer::recognize_gestures(event);      \
+        }                                                      \
+                                                               \
+    protected:                                                 \
+        bool cond(int, int, int, int);                         \
     };
 
 struct Gesture;
@@ -38,12 +37,11 @@ class GestureRecognizer
     // Since gesture recognizers require state of slots, promote the function call to a class
     // so that individual recognizers can have their own state management.
 public:
-    GestureRecognizer();
+    GestureRecognizer(GestureAction);
     virtual void recognize_gestures(struct TouchEvent *event) { single_digit_recognizer(event); }
 
 protected:
     GestureAction action;
-    GestureType type;
     const char *gesture_string = "GestureAction";
     struct Segment *segments;
     int keys_down = 0;
@@ -59,12 +57,12 @@ protected:
     bool single_digit_recognizer(struct TouchEvent *);
 };
 
-class MultiTapShortRecognizer : GestureRecognizer
+class MultiTapNarrowRecognizer : GestureRecognizer
 {
 public:
-    MultiTapShortRecognizer() : GestureRecognizer()
+    MultiTapNarrowRecognizer(GestureAction action) : GestureRecognizer(action)
     {
-        gesture_string = "MultiTapShortRecognizer";
+        gesture_string = "MultiTapNarrowRecognizer";
     }
 
     void recognize_gestures(struct TouchEvent *event);
@@ -73,7 +71,7 @@ public:
 class MultiTapWideRecognizer : GestureRecognizer
 {
 public:
-    MultiTapWideRecognizer() : GestureRecognizer()
+    MultiTapWideRecognizer(GestureAction action) : GestureRecognizer(action)
     {
         gesture_string = "MultiTapWideRecognizer";
     }
@@ -81,18 +79,18 @@ public:
     void recognize_gestures(struct TouchEvent *event);
 };
 
-RECOGNIZER_CLASS(LeftTapShortRecognizer, GestureType::TapLeft)
-RECOGNIZER_CLASS(LeftSwipeShortRecognizer, GestureType::SwipeLeft)
-RECOGNIZER_CLASS(LeftSwipeLongRecognizer, GestureType::SwipeLeftLong)
-RECOGNIZER_CLASS(RightTapShortRecognizer, GestureType::TapRight)
-RECOGNIZER_CLASS(RightSwipeShortRecognizer, GestureType::SwipeRight)
-RECOGNIZER_CLASS(RightSwipeLongRecognizer, GestureType::SwipeRightLong)
-RECOGNIZER_CLASS(UpTapShortRecognizer, GestureType::TapUp)
-RECOGNIZER_CLASS(UpSwipeShortRecognizer, GestureType::SwipeUp)
-RECOGNIZER_CLASS(UpSwipeLongRecognizer, GestureType::SwipeUpLong)
-RECOGNIZER_CLASS(DownTapShortRecognizer, GestureType::TapDown)
-RECOGNIZER_CLASS(DownSwipeShortRecognizer, GestureType::SwipeDown)
-RECOGNIZER_CLASS(DownSwipeLongRecognizer, GestureType::SwipeDownLong)
+RECOGNIZER_CLASS(LeftTapShortRecognizer);
+RECOGNIZER_CLASS(LeftSwipeShortRecognizer);
+RECOGNIZER_CLASS(LeftSwipeLongRecognizer);
+RECOGNIZER_CLASS(RightTapShortRecognizer);
+RECOGNIZER_CLASS(RightSwipeShortRecognizer);
+RECOGNIZER_CLASS(RightSwipeLongRecognizer);
+RECOGNIZER_CLASS(UpTapShortRecognizer);
+RECOGNIZER_CLASS(UpSwipeShortRecognizer);
+RECOGNIZER_CLASS(UpSwipeLongRecognizer);
+RECOGNIZER_CLASS(DownTapShortRecognizer);
+RECOGNIZER_CLASS(DownSwipeShortRecognizer);
+RECOGNIZER_CLASS(DownSwipeLongRecognizer);
 
 class LeftTapLongRecognizer : GestureRecognizer
 {

@@ -1,26 +1,6 @@
 #pragma once
 #include "point.hpp"
 
-enum GestureType
-{
-    Tap,
-    TapLeft,
-    TapRight,
-    TapUp,
-    TapDown,
-    TapHold,
-    SwipeLeft,
-    SwipeLeftLong,
-    SwipeRight,
-    SwipeRightLong,
-    SwipeUp,
-    SwipeUpLong,
-    SwipeDown,
-    SwipeDownLong,
-    TwoTap,
-    TwoTapWide
-};
-
 enum GestureAction
 {
     Enable,
@@ -55,7 +35,6 @@ union GestureData {
 
 struct Gesture
 {
-    enum GestureType type;
     enum GestureAction action;
     union GestureData data;
 };

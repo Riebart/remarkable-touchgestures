@@ -8,8 +8,9 @@
 #include "include/keyinjector.hpp"
 #include "include/gesture_definition.hpp"
 
-GestureRecognizer::GestureRecognizer()
+GestureRecognizer::GestureRecognizer(GestureAction action)
 {
+    this->action = action;
     this->segments = (struct Segment *)calloc(MAX_SLOTS + 1, sizeof(Segment));
 }
 
@@ -31,7 +32,7 @@ int GestureRecognizer::tap_down(struct TouchEvent *event)
     return slot;
 }
 
-void MultiTapShortRecognizer::recognize_gestures(struct TouchEvent *event)
+void MultiTapNarrowRecognizer::recognize_gestures(struct TouchEvent *event)
 {
     int slot = tap_down(event);
 
@@ -54,7 +55,7 @@ void MultiTapShortRecognizer::recognize_gestures(struct TouchEvent *event)
                 {
                 case 2:
                     printf("%d finger tap\n", segment_count);
-                    gesture.type = TwoTap;
+                    gesture.action = action;
                     interpret_gesture(&gesture);
                     break;
                 default:
@@ -96,7 +97,7 @@ void MultiTapWideRecognizer::recognize_gestures(struct TouchEvent *event)
                     if (distance > MULTITOUCH_DISTANCE)
                     {
                         printf("%d wide finger tap\n", segment_count);
-                        gesture.type = TwoTapWide;
+                        gesture.action = action;
                         interpret_gesture(&gesture);
                     }
                     break;
@@ -154,8 +155,6 @@ bool GestureRecognizer::single_digit_recognizer(struct TouchEvent *event)
                 {
                     ret = true;
                     printf("Recognized gesture %s\n", gesture_string);
-                    gesture.type = type;
-                    printf("%d\n", type);
                     gesture.action = action;
                     interpret_gesture(&gesture);
                 }

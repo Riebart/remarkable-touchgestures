@@ -16,23 +16,23 @@ int main(int argc, char **argv)
     ui_init();
 
     GestureRecognizer *recognizers[] = {
-        (GestureRecognizer *)new MultiTapShortRecognizer(),
-        (GestureRecognizer *)new MultiTapWideRecognizer(),
-        (GestureRecognizer *)new LeftTapShortRecognizer(),
-        (GestureRecognizer *)new RightTapShortRecognizer(),
-        (GestureRecognizer *)new UpTapShortRecognizer(),
-        (GestureRecognizer *)new DownTapShortRecognizer(),
-        (GestureRecognizer *)new LeftSwipeShortRecognizer(),
-        (GestureRecognizer *)new RightSwipeShortRecognizer(),
-        (GestureRecognizer *)new LeftSwipeLongRecognizer(),
-        (GestureRecognizer *)new RightSwipeLongRecognizer(),
-        (GestureRecognizer *)new UpSwipeShortRecognizer(),
-        (GestureRecognizer *)new DownSwipeShortRecognizer(),
-        (GestureRecognizer *)new UpSwipeLongRecognizer(),
-        (GestureRecognizer *)new DownSwipeLongRecognizer(),
+        // (GestureRecognizer *)new MultiTapNarrowRecognizer(),
+        (GestureRecognizer *)new MultiTapWideRecognizer(GestureAction::ToggleEnabled),
+        // (GestureRecognizer *)new LeftTapShortRecognizer(),
+        // (GestureRecognizer *)new RightTapShortRecognizer(),
+        // (GestureRecognizer *)new UpTapShortRecognizer(),
+        // (GestureRecognizer *)new DownTapShortRecognizer(),
+        (GestureRecognizer *)new LeftSwipeShortRecognizer(GestureAction::NextPage),
+        (GestureRecognizer *)new RightSwipeShortRecognizer(GestureAction::PreviousPage),
+        (GestureRecognizer *)new LeftSwipeLongRecognizer(GestureAction::NextPage),
+        (GestureRecognizer *)new RightSwipeLongRecognizer(GestureAction::PreviousPage),
+        // (GestureRecognizer *)new UpSwipeShortRecognizer(),
+        (GestureRecognizer *)new DownSwipeShortRecognizer(GestureAction::ShowClock),
+        // (GestureRecognizer *)new UpSwipeLongRecognizer(),
+        (GestureRecognizer *)new DownSwipeLongRecognizer(GestureAction::ShowClock),
     };
 
-    process_touch(recognizers, 14);
+    process_touch(recognizers, 7);
 
     return 0;
 }

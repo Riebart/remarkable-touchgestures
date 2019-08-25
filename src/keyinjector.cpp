@@ -44,28 +44,24 @@ void move_pen(int x, int y, long time);
 
 void interpret_gesture(struct Gesture *g)
 {
-    if (g->type == TwoTapWide)
+    if ((g->action == GestureAction::Enable) || ((g->action == GestureAction::ToggleEnabled) && !touch_enabled))
     {
-        if (touch_enabled)
-        {
-            show("touch navigation disabled");
-            printf("disabling\n");
-            touch_enabled = false;
-        }
-        else
-        {
-            show("touch navigation enabled");
-            printf("enabling\n");
-            touch_enabled = true;
-        }
-        return;
+        show("touch navigation enabled");
+        printf("enabling\n");
+        touch_enabled = true;
+    }
+    else if ((g->action == GestureAction::Disable) || ((g->action == GestureAction::ToggleEnabled) && touch_enabled))
+    {
+        show("touch navigation disabled");
+        printf("disabling\n");
+        touch_enabled = false;
     }
 
     time_t rawtime;
     time(&rawtime);
-    switch (g->type)
+    switch (g->action)
     {
-    case SwipeDownLong:
+    case ShowClock:
     {
         struct tm *timeinfo = localtime(&rawtime);
         char buffer[100];
@@ -82,19 +78,17 @@ void interpret_gesture(struct Gesture *g)
         return;
 
     //require touch enabled
-    switch (g->type)
+    switch (g->action)
     {
-    case TapLeft:
-    case SwipeRight:
-        press_button(Left);
+    case GestureAction::PreviousPage:
+        press_button(Key::Left);
         break;
-    case TapRight:
-    case SwipeLeft:
-        press_button(Right);
+    case GestureAction::NextPage:
+        press_button(Key::Right);
         break;
-    case SwipeUpLong:
+    case GestureAction::Suspend:
         printf("power\n");
-        press_button(Power);
+        press_button(Key::Power);
         break;
     default:
         break;
