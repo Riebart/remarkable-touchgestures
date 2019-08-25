@@ -1,5 +1,29 @@
 #pragma once
+
+#include <string>
+
+#include "gesture_definition.hpp"
 #include "eventreader.hpp"
+#include "ui.hpp"
+
+#define RECOGNIZER_CLASS(name, class_gesture_type)        \
+    class name : GestureRecognizer                        \
+    {                                                     \
+    public:                                               \
+        name() : GestureRecognizer()                      \
+        {                                                 \
+            gesture_string = #name;                       \
+            type = class_gesture_type;                    \
+        }                                                 \
+                                                          \
+        void recognize_gestures(struct TouchEvent *event) \
+        {                                                 \
+            GestureRecognizer::recognize_gestures(event); \
+        }                                                 \
+                                                          \
+    protected:                                            \
+        bool cond(int, int, int, int);                    \
+    };
 
 struct Gesture;
 
@@ -15,57 +39,65 @@ class GestureRecognizer
     // so that individual recognizers can have their own state management.
 public:
     GestureRecognizer();
-    virtual void recognize_gestures(struct TouchEvent *){};
+    virtual void recognize_gestures(struct TouchEvent *event) { single_digit_recognizer(event); }
 
 protected:
-    // Take care of the boilerplate of noting when a tap starts.
-    int tap_down(struct TouchEvent *);
-
+    GestureAction action;
+    GestureType type;
+    const char *gesture_string = "GestureAction";
     struct Segment *segments;
     int keys_down = 0;
     int segment_count = 0;
+
+    // A condition of whether the gesture occurred, based on the position of the touch currently
+    // and the change in position since the touch started.
+    virtual bool cond(int, int, int, int) { return false; }
+
+    // Take care of the boilerplate of noting when a tap starts.
+    int tap_down(struct TouchEvent *);
+
+    bool single_digit_recognizer(struct TouchEvent *);
 };
 
 class MultiTapShortRecognizer : GestureRecognizer
 {
 public:
-    void recognize_gestures(struct TouchEvent *);
+    MultiTapShortRecognizer() : GestureRecognizer()
+    {
+        gesture_string = "MultiTapShortRecognizer";
+    }
+
+    void recognize_gestures(struct TouchEvent *event);
 };
 
 class MultiTapWideRecognizer : GestureRecognizer
 {
 public:
-    void recognize_gestures(struct TouchEvent *);
+    MultiTapWideRecognizer() : GestureRecognizer()
+    {
+        gesture_string = "MultiTapWideRecognizer";
+    }
+
+    void recognize_gestures(struct TouchEvent *event);
 };
 
-class LeftTapShortRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
+RECOGNIZER_CLASS(LeftTapShortRecognizer, GestureType::TapLeft)
+RECOGNIZER_CLASS(LeftSwipeShortRecognizer, GestureType::SwipeLeft)
+RECOGNIZER_CLASS(LeftSwipeLongRecognizer, GestureType::SwipeLeftLong)
+RECOGNIZER_CLASS(RightTapShortRecognizer, GestureType::TapRight)
+RECOGNIZER_CLASS(RightSwipeShortRecognizer, GestureType::SwipeRight)
+RECOGNIZER_CLASS(RightSwipeLongRecognizer, GestureType::SwipeRightLong)
+RECOGNIZER_CLASS(UpTapShortRecognizer, GestureType::TapUp)
+RECOGNIZER_CLASS(UpSwipeShortRecognizer, GestureType::SwipeUp)
+RECOGNIZER_CLASS(UpSwipeLongRecognizer, GestureType::SwipeUpLong)
+RECOGNIZER_CLASS(DownTapShortRecognizer, GestureType::TapDown)
+RECOGNIZER_CLASS(DownSwipeShortRecognizer, GestureType::SwipeDown)
+RECOGNIZER_CLASS(DownSwipeLongRecognizer, GestureType::SwipeDownLong)
 
 class LeftTapLongRecognizer : GestureRecognizer
 {
 public:
     void recognize_gestures(struct TouchEvent *) { throw "NotImplemented"; };
-};
-
-class LeftSwipeShortRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
-class LeftSwipeLongRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
-class RightTapShortRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
 };
 
 class RightTapLongRecognizer : GestureRecognizer
@@ -74,46 +106,10 @@ public:
     void recognize_gestures(struct TouchEvent *) { throw "NotImplemented"; };
 };
 
-class RightSwipeShortRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
-class RightSwipeLongRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
-class UpTapShortRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
 class UpTapLongRecognizer : GestureRecognizer
 {
 public:
     void recognize_gestures(struct TouchEvent *) { throw "NotImplemented"; };
-};
-
-class UpSwipeShortRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
-class UpSwipeLongRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
-class DownTapShortRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
 };
 
 class DownTapLongRecognizer : GestureRecognizer
@@ -121,21 +117,3 @@ class DownTapLongRecognizer : GestureRecognizer
 public:
     void recognize_gestures(struct TouchEvent *) { throw "NotImplemented"; };
 };
-
-class DownSwipeShortRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
-class DownSwipeLongRecognizer : GestureRecognizer
-{
-public:
-    void recognize_gestures(struct TouchEvent *);
-};
-
-void recognize_tap(struct TouchEvent *);
-void recognize_shortswipe(struct TouchEvent *);
-void recognize_longswipe(struct TouchEvent *);
-
-void interpret_gesture(struct Gesture *);

@@ -21,6 +21,17 @@ enum GestureType
     TwoTapWide
 };
 
+enum GestureAction
+{
+    Enable,
+    Disable,
+    ToggleEnabled,
+    NextPage,
+    PreviousPage,
+    ShowClock,
+    Suspend
+};
+
 struct Tap
 {
     struct Point p;
@@ -45,5 +56,6 @@ union GestureData {
 struct Gesture
 {
     enum GestureType type;
+    enum GestureAction action;
     union GestureData data;
 };

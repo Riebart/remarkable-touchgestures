@@ -4,6 +4,7 @@
 #include "include/ui.hpp"
 #include "include/version.hpp"
 #include "include/gestures.hpp"
+#include "gesture_definition.hpp"
 #include "include/eventreader.hpp"
 #include "include/keyinjector.hpp"
 
@@ -28,7 +29,8 @@ int main(int argc, char **argv)
         (GestureRecognizer *)new UpSwipeShortRecognizer(),
         (GestureRecognizer *)new DownSwipeShortRecognizer(),
         (GestureRecognizer *)new UpSwipeLongRecognizer(),
-        (GestureRecognizer *)new DownSwipeLongRecognizer()};
+        (GestureRecognizer *)new DownSwipeLongRecognizer(),
+    };
 
     process_touch(recognizers, 14);
 

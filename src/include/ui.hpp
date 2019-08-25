@@ -13,9 +13,9 @@
 #define MAX_SLOTS 7             //max touch points to track, based on support of multitouch input hardware
 #define MULTITOUCH_DISTANCE 500 //distance between the fingers to enable disable
 
-#define JITTER 20 //finger displacement to be consideded a swipe
+#define JITTER 100 //finger displacement to be consideded a swipe
 #define LONG_HORIZONTAL_SWIPE_LENGTH 400
-#define LONG_VERTICAL_SWIPE_LENGTH 400
+#define LONG_VERTICAL_SWIPE_LENGTH 600
 
 #define DEBUG 0
 #define debug_print(fmt, ...)                  \
